@@ -1,5 +1,5 @@
 ﻿namespace Deepin.EventBus.RabbitMQ;
-public class RabbitMqConfiguration
+public class RabbitMqOptions
 {
     public static string ConfigurationKey = "RabbitMQ";
     public required string Host { get; set; }

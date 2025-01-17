@@ -6,7 +6,7 @@ namespace Deepin.EventBus.RabbitMQ;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddEventBusRabbitMQ(this IServiceCollection services, RabbitMqConfiguration mqConfig, Assembly assembly)
+    public static IServiceCollection AddEventBusRabbitMQ(this IServiceCollection services, RabbitMqOptions mqConfig, Assembly assembly)
     {
         if (mqConfig is null)
         {

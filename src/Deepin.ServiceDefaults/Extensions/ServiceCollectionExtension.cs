@@ -7,7 +7,7 @@ namespace Deepin.ServiceDefaults.Extensions;
 
 public static class ServiceCollectionExtension
 {
-    public static WebApplicationBuilder AddServiceDefaults(this WebApplicationBuilder builder, Assembly eventHandlerAssembly = null)
+    public static WebApplicationBuilder AddServiceDefaults(this WebApplicationBuilder builder)
     {
         builder.Services
             .AddDefaultControllers()
@@ -19,7 +19,21 @@ public static class ServiceCollectionExtension
 
         return builder;
     }
-
+    public static IServiceCollection AddDefaultCache(this IServiceCollection services, string? redisConnection = null)
+    {
+        if(string.IsNullOrEmpty(redisConnection))
+        {
+            services.AddDistributedMemoryCache();
+        }
+        else
+        {
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConnection;
+            });
+        }
+        return services;
+    }
     public static IServiceCollection AddDefaultUserContexts(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();
