@@ -7,7 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AAB0EBF0-BC4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E5888439-3780-4165-A32C-A30242C8186E}"
 	ProjectSection(SolutionItems) = preProject
+		LICENSE.txt = LICENSE.txt
 		.github\workflows\publish-nuget.yaml = .github\workflows\publish-nuget.yaml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deepin.EventBus", "src\Deepin.EventBus\Deepin.EventBus.csproj", "{6E5D03FA-7DDD-4FA9-83ED-BE3DE0829B51}"
