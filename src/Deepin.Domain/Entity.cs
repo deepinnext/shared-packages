@@ -38,7 +38,7 @@ public abstract class Entity<TKey> : Entity
         {
             _id = value;
         }
-    } 
+    }
 
     public bool IsTransient()
     {
@@ -54,7 +54,7 @@ public abstract class Entity<TKey> : Entity
             return true;
 
         if (this.GetType() != obj.GetType())
-            return false; 
+            return false;
 
         Entity<TKey> item = (Entity<TKey>)obj;
 
