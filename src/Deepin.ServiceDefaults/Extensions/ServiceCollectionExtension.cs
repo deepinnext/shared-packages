@@ -1,4 +1,5 @@
-﻿using Deepin.ServiceDefaults.Services;
+﻿using Deepin.Domain;
+using Deepin.ServiceDefaults.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -14,8 +15,7 @@ public static class ServiceCollectionExtension
             .AddDefaultCorsPolicy()
             .AddDefaultHealthChecks()
             .AddDefaultAuthentication(builder.Configuration)
-            .AddDefaultOpenApi(builder.Configuration)
-            .AddDefaultUserContexts();
+            .AddDefaultOpenApi(builder.Configuration);
 
         return builder;
     }

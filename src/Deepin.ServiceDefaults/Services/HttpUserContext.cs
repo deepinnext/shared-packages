@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Deepin.Domain;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 namespace Deepin.ServiceDefaults.Services;
