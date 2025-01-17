@@ -8,6 +8,10 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddEventBusRabbitMQ(this IServiceCollection services, RabbitMqConfiguration mqConfig, Assembly assembly)
     {
+        if (mqConfig is null)
+        {
+            throw new ArgumentNullException(nameof(mqConfig), "RabbitMQ configuration cannot be null");
+        }
         services.AddMassTransit(config =>
         {
             config.AddConsumers(assembly);
