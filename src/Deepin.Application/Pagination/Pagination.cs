@@ -18,4 +18,14 @@ public class Pagination<T> : IPagination<T>
         Offset = offset;
         Items = source.Skip(offset).Take(limit);
     }
+    public Pagination(IEnumerable<T> source, int offset, int limit, int totalCount)
+    {
+        TotalCount = totalCount;
+        TotalPages = totalCount / limit;
+        if (totalCount % limit > 0)
+            TotalPages++;
+        Limit = limit;
+        Offset = offset;
+        Items = source;
+    }
 }
