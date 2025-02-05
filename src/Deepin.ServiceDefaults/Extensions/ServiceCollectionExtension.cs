@@ -1,8 +1,10 @@
 ﻿using Deepin.Domain;
+using Deepin.Infrastructure.Caching;
 using Deepin.ServiceDefaults.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+using StackExchange.Redis;
 
 namespace Deepin.ServiceDefaults.Extensions;
 
@@ -19,18 +21,18 @@ public static class ServiceCollectionExtension
 
         return builder;
     }
-    public static IServiceCollection AddDefaultCache(this IServiceCollection services, string? redisConnection = null)
+    public static IServiceCollection AddDefaultCache(this IServiceCollection services, RedisCacheOptions? options = null)
     {
-        if(string.IsNullOrEmpty(redisConnection))
+        if (options is null)
         {
-            services.AddDistributedMemoryCache();
+            services.AddMemoryCache();
+            services.AddSingleton<ICacheManager>(sp => new MemoryCacheManager(sp.GetRequiredService<IMemoryCache>(), new CacheOptions()));
         }
         else
         {
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConnection;
-            });
+            services.AddSingleton(options);
+            services.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(options.ConnectionString));
+            services.AddSingleton<ICacheManager, RedisCacheManager>();
         }
         return services;
     }

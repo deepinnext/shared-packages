@@ -1,5 +1,3 @@
-using System;
-
 namespace Deepin.Infrastructure.Caching;
 
 public class RedisCacheOptions : CacheOptions

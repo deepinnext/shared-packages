@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Deepin.Infrastructure.Caching;
-internal class MemoryCacheManager(IMemoryCache memoryCache, CacheOptions options) : ICacheManager
+public class MemoryCacheManager(IMemoryCache memoryCache, CacheOptions options) : ICacheManager
 {
     private static readonly ConcurrentDictionary<string, CancellationTokenSource> _keys = new ConcurrentDictionary<string, CancellationTokenSource>();
     private static CancellationTokenSource _cancellationToken = new();
