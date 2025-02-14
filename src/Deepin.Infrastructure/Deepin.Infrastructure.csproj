@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>Deepin.Infrastructure</PackageId>
-		<Version>0.1.1</Version>
+		<Version>0.1.2</Version>
 		<Authors>Leo Yang</Authors>
 		<Company>Deepin</Company>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -14,11 +14,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="9.0.2" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.2" />
 		<PackageReference Include="StackExchange.Redis" Version="2.8.24" />
+		<PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>

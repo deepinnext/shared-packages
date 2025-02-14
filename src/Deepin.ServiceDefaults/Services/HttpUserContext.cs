@@ -1,4 +1,5 @@
 ﻿using Deepin.Domain;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
@@ -63,4 +64,6 @@ public class HttpUserContext : IUserContext
             return _ipAddress ?? string.Empty;
         }
     }
+
+    public string AccessToken => _context.HttpContext?.GetTokenAsync("access_token").Result ?? string.Empty;
 }
