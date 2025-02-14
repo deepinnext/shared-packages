@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Deepin.ServiceDefaults.Extensions;
 
@@ -104,7 +106,35 @@ public static class SwaggerExtensions
                 }
             });
 
-            // options.OperationFilter<AuthorizeCheckOperationFilter>();
+            options.OperationFilter<AuthorizeCheckOperationFilter>();
         });
+    }
+    private sealed class AuthorizeCheckOperationFilter(string[] scopes) : IOperationFilter
+    {
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        {
+            var metadata = context.ApiDescription.ActionDescriptor.EndpointMetadata;
+
+            if (!metadata.OfType<IAuthorizeData>().Any())
+            {
+                return;
+            }
+
+            operation.Responses.TryAdd("401", new OpenApiResponse { Description = "Unauthorized" });
+            operation.Responses.TryAdd("403", new OpenApiResponse { Description = "Forbidden" });
+
+            var oAuthScheme = new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
+            };
+
+            operation.Security = new List<OpenApiSecurityRequirement>
+            {
+                new()
+                {
+                    [ oAuthScheme ] = scopes
+                }
+            };
+        }
     }
 }

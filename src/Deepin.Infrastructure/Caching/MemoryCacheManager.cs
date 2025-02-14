@@ -44,10 +44,10 @@ public class MemoryCacheManager(IMemoryCache memoryCache, CacheOptions options) 
 
     public async Task<T?> GetOrSetAsync<T>(string key, Func<Task<T>> acquire)
     {
-        return await GetOrSetAsync(key, acquire, _options.DefaultCacheTimeMinutes);
+        return await GetOrSetAsync(key, acquire, TimeSpan.FromMinutes(_options.DefaultCacheTimeMinutes));
     }
 
-    public async Task<T?> GetOrSetAsync<T>(string key, Func<Task<T>> acquire, int cacheTime)
+    public async Task<T?> GetOrSetAsync<T>(string key, Func<Task<T>> acquire, TimeSpan absoluteExpiration)
     {
         T? result = default;
         if (string.IsNullOrEmpty(key))
@@ -61,7 +61,7 @@ public class MemoryCacheManager(IMemoryCache memoryCache, CacheOptions options) 
             result = await acquire();
             if (result != null)
             {
-                await this.SetAsync(key, result, cacheTime);
+                await this.SetAsync(key, result, absoluteExpiration);
             }
         }
         return result;
@@ -99,14 +99,14 @@ public class MemoryCacheManager(IMemoryCache memoryCache, CacheOptions options) 
 
     public async Task SetAsync<T>(string key, T data)
     {
-        await this.SetAsync(key, data, _options.DefaultCacheTimeMinutes);
+        await this.SetAsync(key, data, TimeSpan.FromMinutes(_options.DefaultCacheTimeMinutes));
     }
 
-    public async Task SetAsync<T>(string key, T data, int cacheTime)
+    public async Task SetAsync<T>(string key, T data, TimeSpan absoluteExpiration)
     {
         var added = _keys.TryAdd(key, _cancellationToken);
         if (added)
-            _memoryCache.Set(key, data, TimeSpan.FromMinutes(cacheTime));
+            _memoryCache.Set(key, data, absoluteExpiration);
         await Task.FromResult(0);
     }
 }

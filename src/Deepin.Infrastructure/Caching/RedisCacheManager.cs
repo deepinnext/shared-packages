@@ -39,10 +39,16 @@ public class RedisCacheManager(IConnectionMultiplexer redis, RedisCacheOptions o
     {
         if (keys == null || keys.Length == 0)
             return null;
+        var redisKeys = Array.ConvertAll(keys, key => (RedisKey)key);
+        var serializedItems = await _database.StringGetAsync(redisKeys.ToArray());
+        if (serializedItems == null || !serializedItems.Any())
+            return null;
         var result = new List<T>();
-        foreach (var key in keys)
+        foreach (var serializedItem in serializedItems)
         {
-            var item = await this.GetAsync<T>(key);
+            if (!serializedItem.HasValue)
+                continue;
+            var item = JsonConvert.DeserializeObject<T>(serializedItem.ToString());
             if (item != null)
                 result.Add(item);
         }
@@ -51,10 +57,10 @@ public class RedisCacheManager(IConnectionMultiplexer redis, RedisCacheOptions o
 
     public async Task<T?> GetOrSetAsync<T>(string key, Func<Task<T>> acquire)
     {
-        return await GetOrSetAsync(key, acquire, _options.DefaultCacheTimeMinutes);
+        return await GetOrSetAsync(key, acquire, TimeSpan.FromMinutes(_options.DefaultCacheTimeMinutes));
     }
 
-    public async Task<T?> GetOrSetAsync<T>(string key, Func<Task<T>> acquire, int cacheTime)
+    public async Task<T?> GetOrSetAsync<T>(string key, Func<Task<T>> acquire, TimeSpan absoluteExpiration)
     {
         T? result = default;
         if (string.IsNullOrEmpty(key))
@@ -70,7 +76,7 @@ public class RedisCacheManager(IConnectionMultiplexer redis, RedisCacheOptions o
             result = await acquire();
             if (result != null)
             {
-                await this.SetAsync(key, result, cacheTime);
+                await this.SetAsync(key, result, absoluteExpiration);
             }
         }
         return result;
@@ -98,21 +104,21 @@ public class RedisCacheManager(IConnectionMultiplexer redis, RedisCacheOptions o
 
     public Task SetAsync<T>(string key, T data)
     {
-        return this.SetAsync(key, data, _options.DefaultCacheTimeMinutes);
+        return this.SetAsync(key, data, TimeSpan.FromMinutes(_options.DefaultCacheTimeMinutes));
     }
 
-    public async Task SetAsync<T>(string key, T data, int cacheTimeMinutes)
+    public async Task SetAsync<T>(string key, T data, TimeSpan absoluteExpiration)
     {
         if (string.IsNullOrEmpty(key))
             return;
 
-        if (cacheTimeMinutes <= 0)
+        if (absoluteExpiration == TimeSpan.Zero)
             return;
 
         if (data == null)
             return;
 
         var serializedItem = JsonConvert.SerializeObject(data);
-        await _database.StringSetAsync(key, serializedItem, TimeSpan.FromMinutes(cacheTimeMinutes));
+        await _database.StringSetAsync(key, serializedItem, absoluteExpiration);
     }
 }
