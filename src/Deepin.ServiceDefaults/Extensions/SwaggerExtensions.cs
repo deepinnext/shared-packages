@@ -106,7 +106,7 @@ public static class SwaggerExtensions
                 }
             });
 
-            options.OperationFilter<AuthorizeCheckOperationFilter>();
+            options.OperationFilter<AuthorizeCheckOperationFilter>(scopes.Keys.ToArray());
         });
     }
     private sealed class AuthorizeCheckOperationFilter(string[] scopes) : IOperationFilter
