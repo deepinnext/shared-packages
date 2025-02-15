@@ -106,35 +106,37 @@ public static class SwaggerExtensions
                 }
             });
 
-            options.OperationFilter<AuthorizeCheckOperationFilter>(scopes.Keys.ToArray());
+            options.OperationFilter<AuthorizeCheckOperationFilter>(configuration);
         });
     }
-    public sealed class AuthorizeCheckOperationFilter(string[] scopes) : IOperationFilter
+
+}
+public sealed class AuthorizeCheckOperationFilter(IConfiguration configuration) : IOperationFilter
+{
+    private readonly string[] _scopes = configuration.GetSection("Identity:Scopes").GetChildren().Select(p => p.Key).ToArray();
+    public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        var metadata = context.ApiDescription.ActionDescriptor.EndpointMetadata;
+
+        if (!metadata.OfType<IAuthorizeData>().Any())
         {
-            var metadata = context.ApiDescription.ActionDescriptor.EndpointMetadata;
+            return;
+        }
 
-            if (!metadata.OfType<IAuthorizeData>().Any())
-            {
-                return;
-            }
+        operation.Responses.TryAdd("401", new OpenApiResponse { Description = "Unauthorized" });
+        operation.Responses.TryAdd("403", new OpenApiResponse { Description = "Forbidden" });
 
-            operation.Responses.TryAdd("401", new OpenApiResponse { Description = "Unauthorized" });
-            operation.Responses.TryAdd("403", new OpenApiResponse { Description = "Forbidden" });
+        var oAuthScheme = new OpenApiSecurityScheme
+        {
+            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
+        };
 
-            var oAuthScheme = new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
-            };
-
-            operation.Security = new List<OpenApiSecurityRequirement>
+        operation.Security = new List<OpenApiSecurityRequirement>
             {
                 new()
                 {
-                    [ oAuthScheme ] = scopes
+                    [ oAuthScheme ] = _scopes
                 }
             };
-        }
     }
 }
