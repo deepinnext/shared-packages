@@ -109,7 +109,7 @@ public static class SwaggerExtensions
             options.OperationFilter<AuthorizeCheckOperationFilter>(scopes.Keys.ToArray());
         });
     }
-    private sealed class AuthorizeCheckOperationFilter(string[] scopes) : IOperationFilter
+    public sealed class AuthorizeCheckOperationFilter(string[] scopes) : IOperationFilter
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
