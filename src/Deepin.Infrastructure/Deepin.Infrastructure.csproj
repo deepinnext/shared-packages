@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>Deepin.Infrastructure</PackageId>
-		<Version>0.1.2</Version>
+		<Version>0.1.6</Version>
 		<Authors>Leo Yang</Authors>
 		<Company>Deepin</Company>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
