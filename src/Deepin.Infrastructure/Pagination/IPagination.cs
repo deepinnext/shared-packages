@@ -1,9 +1,8 @@
-﻿namespace Deepin.Application.Pagination;
+﻿namespace Deepin.Infrastructure.Pagination;
 public interface IPagination
 {
     int Offset { get; }
     int Limit { get; }
-    int TotalPages { get; }
     int TotalCount { get; }
 }
 public interface IPagination<T> : IPagination
