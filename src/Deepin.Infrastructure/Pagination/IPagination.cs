@@ -8,4 +8,5 @@ public interface IPagination
 public interface IPagination<T> : IPagination
 {
     IEnumerable<T> Items { get; }
+    bool HasMore { get; }
 }
